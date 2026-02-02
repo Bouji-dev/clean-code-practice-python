@@ -7,6 +7,8 @@ A simple CLI TODO List application in Python to practice and demonstrate Clean C
 ## Description
 A simple command-line TODO list manager to practice Clean Code principles from Uncle Bob's book. Built in Python.
 
+## Day 1:
+
 ## Features
 - Add tasks
 - Show tasks
@@ -14,12 +16,25 @@ A simple command-line TODO list manager to practice Clean Code principles from U
 - Mark tasks as done
 - Save to JSON file
 
-## Installation
-1. Clone the repo: `git clone <repo-url>`
-2. Run: `python main.py`
+## Progress
+- Day 1: Improved naming for better readability.
+
+## License
+MIT
+
+
+## Day 2:
+
+## Features
+- Add tasks
+- Show tasks with status
+- Delete tasks
+- Mark tasks as done
+- Persistent storage in JSON file
 
 ## Progress
 - Day 1: Improved naming for better readability.
+- Day 2: Refactored into small, single-responsibility functions + Stepdown Rule applied.
 
 ## License
 MIT
