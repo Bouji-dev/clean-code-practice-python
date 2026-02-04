@@ -1,55 +1,75 @@
 import json
 
 
-def load_todos():
+class TodoItem:
+    def __init__(self, task: str, done: bool = False):
+        self._task = task.strip()
+        self._done = done
+
+    def mark_as_done(self):
+        self._done = True
+
+    def is_done(self) -> bool:
+        return self._done
+
+    @property
+    def task(self) -> str:
+        return self._task
+
+    def __str__(self) -> str:
+        status = "✅ Done" if self._done else "⏳ Pending"
+        return f"{self._task} - {status}"
+
+
+def load_todos() -> list[TodoItem]:
     try:
         with open("todos.json", "r") as file:
-            return json.load(file)
-    except FileNotFoundError:
+            data = json.load(file)
+            return [TodoItem(item["task"], item["done"]) for item in data]
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
         return []
 
 
-def save_todos(todos):
+def save_todos(todos: list[TodoItem]):
+    data = [{"task": t.task, "done": t.is_done()} for t in todos]
     with open("todos.json", "w") as file:
-        json.dump(todos, file, indent=2, ensure_ascii=False)
+        json.dump(data, file, indent=2, ensure_ascii=False)
 
 
-def display_todos(todos):
+def display_todos(todos: list[TodoItem]):
     if not todos:
         print("No tasks yet!")
         return
-    
-    for index, item in enumerate(todos):
-        status = "Done" if item["done"] else "Pending"
-        print(f"{index}: {item['task']} - {status}")
+
+    for index, todo in enumerate(todos):
+        print(f"{index}: {todo}")
 
 
-def add_task(todos):
+def add_task(todos: list[TodoItem]):
     task = input("Enter new task: ").strip()
     if task:
-        todos.append({"task": task, "done": False})
+        todos.append(TodoItem(task))
         print("Task added!")
     else:
         print("Task cannot be empty.")
 
 
-def delete_task(todos):
+def delete_task(todos: list[TodoItem]):
     try:
         index = int(input("Enter task index to delete: "))
         removed = todos.pop(index)
-        print(f"Deleted: {removed['task']}")
+        print(f"Deleted: {removed.task}")
     except (ValueError, IndexError):
         print("Invalid index!")
 
 
-def mark_done(todos):
+def mark_done(todos: list[TodoItem]):
     try:
         index = int(input("Enter task index to mark done: "))
-        todos[index]["done"] = True
+        todos[index].mark_as_done()
         print("Marked as done!")
     except (ValueError, IndexError):
         print("Invalid index!")
-
 
 def main():
     todos = load_todos()
