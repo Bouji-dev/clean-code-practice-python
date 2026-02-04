@@ -49,3 +49,18 @@ A simple command-line TODO list manager to practice Clean Code principles from U
 - Day 2: Refactored into small, single-responsibility functions + Stepdown Rule applied.
 - Day 3: Reviewed and minimized comments – prefer self-documenting code over explanatory comments.
 
+
+## Day 4:
+
+## Features
+- Add tasks
+- Show tasks with status
+- Delete tasks
+- Mark tasks as done
+- Persistent storage in JSON file
+
+## Progress
+- Day 1: Improved naming for better readability.
+- Day 2: Refactored into small, single-responsibility functions + Stepdown Rule applied.
+- Day 3: Reviewed and minimized comments – prefer self-documenting code over explanatory comments.
+- Day 4: Applied consistent formatting, vertical/horizontal spacing, and Stepdown ordering (Clean Code Ch. 5)
