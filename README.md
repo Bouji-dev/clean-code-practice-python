@@ -19,9 +19,6 @@ A simple command-line TODO list manager to practice Clean Code principles from U
 ## Progress
 - Day 1: Improved naming for better readability.
 
-## License
-MIT
-
 
 ## Day 2:
 
@@ -36,5 +33,19 @@ MIT
 - Day 1: Improved naming for better readability.
 - Day 2: Refactored into small, single-responsibility functions + Stepdown Rule applied.
 
-## License
-MIT
+
+## Day 3:
+
+## Features
+- Add tasks
+- Show tasks with status
+- Delete tasks
+- Mark tasks as done
+- Persistent storage in JSON file
+
+
+## Progress
+- Day 1: Improved naming for better readability.
+- Day 2: Refactored into small, single-responsibility functions + Stepdown Rule applied.
+- Day 3: Reviewed and minimized comments – prefer self-documenting code over explanatory comments.
+
