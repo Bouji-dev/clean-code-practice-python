@@ -143,3 +143,24 @@ A simple command-line TODO list manager to practice Clean Code principles from U
 - Provide meaningful context in exception messages
 - Prefer specific except clauses over bare except
 - Fail fast: validate inputs as early as possible
+
+## Day 7: Refactoring & SOLID Review
+
+### Features
+- Add tasks
+- Show tasks with status
+- Delete tasks
+- Mark tasks as done
+- Persistent storage in JSON file
+
+### Progress
+- Applied final refactoring: separated repository, command dictionary, better separation of concerns
+- Reviewed SOLID principles throughout the project
+- Improved overall structure and maintainability
+
+### Key Notes
+- Refactoring is continuous — always leave the code cleaner than you found it (Boy Scout Rule)
+- SOLID principles guide better design: Single responsibility, Open/closed, etc.
+- Small, frequent refactorings with tests are safer than big rewrites
+- Command pattern / dictionary dispatch makes adding new commands easy
+- Repository pattern helps separate persistence from business logic

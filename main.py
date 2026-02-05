@@ -11,7 +11,7 @@ class TodoItem:
         self._task = task.strip()
         self._done = done
 
-    def mark_as_done(self):
+    def mark_as_done(self) -> None:
         self._done = True
 
     def is_done(self) -> bool:
@@ -26,40 +26,40 @@ class TodoItem:
         return f"{self._task} - {status}"
 
 
-def load_todos() -> List[TodoItem]:
-    try:
-        with open("todos.json", "r", encoding="utf-8") as file:
-            data = json.load(file)
-            if not isinstance(data, list):
-                raise ValueError("todos.json does not contain a list")
-            return [TodoItem(item["task"], item["done"]) for item in data]
-    except FileNotFoundError:
-        return []
-    except json.JSONDecodeError as e:
-        raise ValueError(f"Invalid JSON in todos.json: {e}")
-    except (KeyError, TypeError) as e:
-        raise ValueError(f"Invalid data format in todos.json: {e}")
+class TodoRepository:
+    FILE_PATH = "todos.json"
+
+    @classmethod
+    def load(cls) -> List[TodoItem]:
+        try:
+            with open(cls.FILE_PATH, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if not isinstance(data, list):
+                    raise ValueError("Invalid data format")
+                return [TodoItem(item["task"], item["done"]) for item in data]
+        except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
+            print(f"Could not load todos: {e}. Starting empty.")
+            return []
+
+    @classmethod
+    def save(cls, todos: List[TodoItem]) -> None:
+        data = [{"task": t.task, "done": t.is_done()} for t in todos]
+        try:
+            with open(cls.FILE_PATH, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+        except IOError as e:
+            print(f"Failed to save todos: {e}")
 
 
-def save_todos(todos: List[TodoItem]) -> None:
-    data = [{"task": t.task, "done": t.is_done()} for t in todos]
-    try:
-        with open("todos.json", "w", encoding="utf-8") as file:
-            json.dump(data, file, indent=2, ensure_ascii=False)
-    except IOError as e:
-        print(f"Error saving todos: {e}")
-
-
-def display_todos(todos: list[TodoItem]):
+def display_todos(todos: list[TodoItem]) -> None:
     if not todos:
         print("No tasks yet!")
         return
-
     for index, todo in enumerate(todos):
         print(f"{index}: {todo}")
 
 
-def add_task(todos: list[TodoItem]):
+def add_task(todos: list[TodoItem]) -> None:
     task = input("Enter new task: ").strip()
     if task:
         todos.append(TodoItem(task))
@@ -93,31 +93,34 @@ def mark_done(todos: List[TodoItem]) -> None:
     except TodoIndexError as e:
         print(e)
 
-def main():
-    todos = load_todos()
+def run():
+    todos = TodoRepository.load()
+
+    commands = {
+        "1": add_task,
+        "2": display_todos,
+        "3": delete_task,
+        "4": mark_done,
+        "5": lambda t: "exit",
+    }
+
     while True:
-        prompt = (
-            "\n1: Add    | 2: Show   | "
+        print("\n1: Add    | 2: Show   | "
             "3: Delete | 4: Done   | "
-            "5: Exit → "
-        )
-        command = input(prompt).strip()
-        
-        if command == "1":
-            add_task(todos)
-        elif command == "2":
-            display_todos(todos)
-        elif command == "3":
-            delete_task(todos)
-        elif command == "4":
-            mark_done(todos)
-        elif command == "5":
-            save_todos(todos)
+            "5: Exit → ")
+        choice = input('Choise:').strip()
+
+        if choice == "5":
+            TodoRepository.save(todos)
             print("Goodbye!")
             break
+
+        action = commands.get(choice)
+        if action:
+            action(todos)
         else:
             print("Invalid command!")
 
 
 if __name__ == "__main__":
-    main()
+    run()
