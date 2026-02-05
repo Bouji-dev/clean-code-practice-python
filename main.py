@@ -1,5 +1,10 @@
 import json
+from typing import List
 
+
+class TodoIndexError(Exception):
+    """Raised when an invalid index is provided for todo operations."""
+    pass
 
 class TodoItem:
     def __init__(self, task: str, done: bool = False):
@@ -21,19 +26,28 @@ class TodoItem:
         return f"{self._task} - {status}"
 
 
-def load_todos() -> list[TodoItem]:
+def load_todos() -> List[TodoItem]:
     try:
-        with open("todos.json", "r") as file:
+        with open("todos.json", "r", encoding="utf-8") as file:
             data = json.load(file)
+            if not isinstance(data, list):
+                raise ValueError("todos.json does not contain a list")
             return [TodoItem(item["task"], item["done"]) for item in data]
-    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+    except FileNotFoundError:
         return []
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid JSON in todos.json: {e}")
+    except (KeyError, TypeError) as e:
+        raise ValueError(f"Invalid data format in todos.json: {e}")
 
 
-def save_todos(todos: list[TodoItem]):
+def save_todos(todos: List[TodoItem]) -> None:
     data = [{"task": t.task, "done": t.is_done()} for t in todos]
-    with open("todos.json", "w") as file:
-        json.dump(data, file, indent=2, ensure_ascii=False)
+    try:
+        with open("todos.json", "w", encoding="utf-8") as file:
+            json.dump(data, file, indent=2, ensure_ascii=False)
+    except IOError as e:
+        print(f"Error saving todos: {e}")
 
 
 def display_todos(todos: list[TodoItem]):
@@ -54,22 +68,30 @@ def add_task(todos: list[TodoItem]):
         print("Task cannot be empty.")
 
 
-def delete_task(todos: list[TodoItem]):
+def delete_task(todos: List[TodoItem]) -> None:
     try:
         index = int(input("Enter task index to delete: "))
+        if not 0 <= index < len(todos):
+            raise TodoIndexError(f"Index {index} is out of range (0-{len(todos)-1})")
         removed = todos.pop(index)
         print(f"Deleted: {removed.task}")
-    except (ValueError, IndexError):
-        print("Invalid index!")
+    except ValueError:
+        print("Please enter a valid number.")
+    except TodoIndexError as e:
+        print(e)
 
 
-def mark_done(todos: list[TodoItem]):
+def mark_done(todos: List[TodoItem]) -> None:
     try:
         index = int(input("Enter task index to mark done: "))
+        if not 0 <= index < len(todos):
+            raise TodoIndexError(f"Index {index} is out of range (0-{len(todos)-1})")
         todos[index].mark_as_done()
         print("Marked as done!")
-    except (ValueError, IndexError):
-        print("Invalid index!")
+    except ValueError:
+        print("Please enter a valid number.")
+    except TodoIndexError as e:
+        print(e)
 
 def main():
     todos = load_todos()
